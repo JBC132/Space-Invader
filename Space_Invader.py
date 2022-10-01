@@ -53,14 +53,35 @@ class Player(Ship):
         self.mask = pygame.mask.from_surface(self.ship_img) # collision hitbox
         self.max_health = health
 
+class Enemy(Ship):
+    COLOR_MAP = {
+        "red": (RED_SPACE_SHIP, RED_LASER),
+        "green": (GREEN_SPACE_SHIP, GREEN_LASER),
+        "blue": (BLUE_SPACE_SHIP, BLUE_LASER)
+        }
+
+    def __init__(self, x, y, color, health=100):
+        super().__init__(x,y,health)
+        self.ship_img, self.laser_img = self.COLOR_MAP[color]
+        self.mask = pygame.mask.from_surface(self.ship_img)
+
+    def move(self, vel):
+        self.y += vel
+        
+
 
 def main():
     run = True
     FPS = 60
-    level = 1
+    level = 0
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
     clock = pygame.time.Clock()
+
+    enemies = []
+    wave_length = 5
+    enemy_vel = 1
+
     player_vel = 5
     player = Player(300,650)
 
@@ -72,6 +93,10 @@ def main():
 
         WIN.blit(lives_label, (10,10))
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10,10))
+        
+
+        for enemy in enemies:
+            enemy.draw(WIN)
 
         player.draw(WIN)
 
@@ -79,8 +104,14 @@ def main():
 
     while run:
         clock.tick(FPS)
-        redraw_window()
 
+        if len(enemies) == 0:
+            level += 1
+            wave_length += 5
+            for i in range(wave_length):
+                enemy = Enemy(random.randrange(50, WIDTH-100), random.randrange(-1500,-100), random.choice(["red", "blue", "green"]))
+                enemies.append(enemy)
+        
         # When press X button
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -97,9 +128,10 @@ def main():
         if keys[pygame.K_s] and player.y + player_vel + player.get_height() < HEIGHT:
             player.y += player_vel
         
-        
+        for enemy in enemies:
+            enemy.move(enemy_vel)
 
-
+        redraw_window()
 
 main()
 
