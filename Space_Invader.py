@@ -62,9 +62,15 @@ class Ship:
         for laser in self.lasers:
             laser.draw(window)
 
-    def move_lasers(self, vel, objs):
-        pass
-
+    def move_lasers(self, vel, obj):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(HEIGHT):
+                self.lasers.remove(laser)
+            elif laser.collision(obj):
+                obj.health -= 10
+                self.lasers.remove(laser)
 
     def cooldown(self):
         if self.cool_down_counter >= self.COOLDOWN:
@@ -91,6 +97,19 @@ class Player(Ship):
         self.laser_img = YELLOW_LASER
         self.mask = pygame.mask.from_surface(self.ship_img) # collision hitbox
         self.max_health = health
+
+
+    def move_lasers(self, vel, objs):
+        self.cooldown()
+        for laser in self.lasers:
+            laser.move(vel)
+            if laser.off_screen(HEIGHT):
+                self.lasers.remove(laser)
+            else:
+                for obj in objs:
+                    if laser.collision(obj):
+                        objs.remove(obj)
+                        self.lasers.remove(laser)
 
 class Enemy(Ship):
     COLOR_MAP = {
