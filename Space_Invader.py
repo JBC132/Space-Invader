@@ -62,6 +62,10 @@ class Ship:
         for laser in self.lasers:
             laser.draw(window)
 
+    def move_lasers(self, vel, objs):
+        pass
+
+
     def cooldown(self):
         if self.cool_down_counter >= self.COOLDOWN:
             self.cool_down_counter = 0
