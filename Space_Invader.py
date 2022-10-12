@@ -40,7 +40,7 @@ class Laser:
         self.y += vel
     
     def off_screen(self, height):
-        return self.y <= height and self.y >= 0
+        return not(self.y <= height and self.y >= 0)
     
     def collision(self, obj):
         return collide(obj, self)
@@ -129,7 +129,7 @@ class Enemy(Ship):
 def collide(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
-    return obj1.mask.overlap(obj2, (offset_x, offset_y)) != None
+    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 def main():
     run = True
@@ -145,6 +145,7 @@ def main():
     enemy_vel = 1
 
     player_vel = 5
+    laser_vel = 4
     player = Player(300,650)
     lost = False
     lost_count = 0
@@ -212,9 +213,12 @@ def main():
         
         for enemy in enemies[:]:
             enemy.move(enemy_vel)
+            enemy.move_lasers(laser_vel,player)
             if enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
+        
+        player.move_lasers(-laser_vel, enemies)
 
 main()
 
