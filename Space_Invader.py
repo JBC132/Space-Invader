@@ -109,7 +109,8 @@ class Player(Ship):
                 for obj in objs:
                     if laser.collision(obj):
                         objs.remove(obj)
-                        self.lasers.remove(laser)
+                        if laser in self.lasers:
+                            self.lasers.remove(laser)
     
     def draw(self, window):
         super().draw(window)
@@ -210,7 +211,7 @@ def main():
         # When press X button
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                quit()
 
         # Movement
         keys = pygame.key.get_pressed()
