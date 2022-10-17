@@ -139,7 +139,7 @@ class Enemy(Ship):
         if self.cool_down_counter == 0:
             laser = Laser(self.x-20, self.y,self.laser_img)
             self.lasers.append(laser)
-            self.cool_down_counter = 1
+            self.cool_down_counter = 1            
         
 def collide(obj1, obj2):
     offset_x = obj2.x - obj1.x
@@ -239,9 +239,7 @@ def main():
 
             elif enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
-                enemies.remove(enemy)
-
-            
+                enemies.remove(enemy)            
         
         player.move_lasers(-laser_vel, enemies)
 
